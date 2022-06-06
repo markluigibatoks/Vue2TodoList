@@ -1,5 +1,8 @@
 <template>
-    <span class="badges" :class="[getClass]">{{title}}</span>
+    <span 
+        class="badges" 
+        :class="[getClass]">{{title}}
+    </span>
 </template>
 
 <script>
@@ -22,7 +25,10 @@
     padding: 5px 10px;
     border-radius: 8px;
     font-size: 16px;
+    margin-right: 10px;
 }
+
+.badges:last-child{margin-right: 0;}
 
 .low {
     background: #50D5F6;

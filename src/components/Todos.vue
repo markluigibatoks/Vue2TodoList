@@ -13,7 +13,7 @@
         </div>
 
 
-        <TodoFooter :hasTodos="todos !== undefined"/>
+        <TodoFooter :hasTodos="todos !== undefined" @on-new-todo="$emit('on-new-todo')"/>
     </div>
 </template>
 
@@ -23,7 +23,14 @@ import Card from './Card.vue';
 import TodoFooter from './TodoFooter.vue';
     export default {
     name: "Todo",
-    components: { TodoHeader, Card, TodoFooter },
+
+    emit: ['on-new-todo'],
+
+    components: { 
+      TodoHeader, 
+      Card, 
+      TodoFooter },
+
     props: {
       todos: [],
       title: String, 

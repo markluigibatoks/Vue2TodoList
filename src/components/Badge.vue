@@ -1,31 +1,56 @@
 <template>
     <span 
         class="badges" 
-        :class="[getClass]">{{title}}
+        :class="[getClass]">
+
+        {{title}}
+
+        <div
+            class="badges__button"
+            @click="$emit('on-remove')"
+            v-if="deletable"
+         >
+            <i class="fa-solid fa-circle-xmark" > </i>
+        </div>
+
     </span>
 </template>
 
 <script>
     export default {
         name: 'Badge',
+
+        emits: ['on-remove'],
+
         props: {
             title: String,
+            deletable: {
+                type: Boolean,
+                default: false,
+            }
         },
+
         computed: {
             getClass(){
-                console.log(this.title.trim().toLowerCase().replace(' ', '__'));
                 return this.title.trim().toLowerCase().replace(' ', '__');
             }
         }
     }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .badges {
     padding: 5px 10px;
     border-radius: 8px;
     font-size: 16px;
     margin-right: 10px;
+    display: inline-block;
+    margin-bottom: 10px;
+    
+    div {
+        display: inline;
+        cursor: pointer;
+    }
 }
 
 .badges:last-child{margin-right: 0;}

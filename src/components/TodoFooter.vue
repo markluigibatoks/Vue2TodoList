@@ -4,7 +4,10 @@
         class="footer__actions" 
         :class="{no__child: !hasTodos}"
     >
-        <button class="button">
+        <button 
+        class="button"
+        @click="$emit('on-new-todo')"
+        >
             <div class="button__prepend">
                 <i class="fa-solid fa-circle-plus"></i>
             </div>
@@ -16,6 +19,7 @@
 <script>
     export default {
         name: 'TodoFooter',
+        emit: ['on-new-todo'],
         props: {
             hasTodos: Boolean,
         },

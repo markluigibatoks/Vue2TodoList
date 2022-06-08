@@ -2,8 +2,6 @@
   <div class="wrapper">
       <div class="content">
         
-        <!-- <TodoForm @on-close="closeForm" v-if="showForm" :group="groupForForm" @new-todo="addTodo"/> -->
-
         <template v-for="(group, groupKey) in todosByGroup" :keys="groupKey">
           <Todos :todos="group" :title="groupKey"/>
         </template>

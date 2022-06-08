@@ -2,7 +2,7 @@
   <div class="wrapper">
       <div class="content">
         
-        <TodoForm @on-close="closeForm" v-if="showForm" :group="groupForForm" @new-todo="addTodo"/>
+        <!-- <TodoForm @on-close="closeForm" v-if="showForm" :group="groupForForm" @new-todo="addTodo"/> -->
 
         <template v-for="(group, groupKey) in todosByGroup" :keys="groupKey">
           <Todos :todos="group" :title="(groupKey === 'todo') ? 'To do' : groupKey" @on-new-todo="openForm(groupKey)"/>
@@ -15,7 +15,8 @@
 <script>
 // @ is an alias to /src
 import Todos from '@/components/Todos.vue'
-import TodoForm from '@/components/TodoForm.vue';
+
+import {mapActions, mapGetters} from 'vuex'
 
 export default {
   name: 'HomeView',
@@ -28,12 +29,9 @@ export default {
     }
   },
 
-  created(){
-    let parsedTodos = JSON.parse(localStorage.getItem('todos')) || []
-    this.todos = parsedTodos
-  },
-
   methods: {
+    ...mapActions(["fetchTodos"]),
+
     toggleForm(){
       this.showForm = !this.showForm
     },
@@ -60,28 +58,14 @@ export default {
 
   components: {
     Todos,
-    TodoForm
+  },
+
+  created(){ 
+    this.fetchTodos()
   },
 
   computed: {
-    todosByGroup() {
-      const group = {
-        todo: [],
-        doing: [],
-        done: [],
-        dynamic: []
-      }
-
-      this.todos.forEach(curr => {
-        if (!group[curr.group]) {
-          group[curr.group] = []
-        }
-
-        group[curr.group].push(curr)
-      })
-
-      return group
-    }
+    ...mapGetters (["allTodos", "todosByGroup"]),
   },
 
   watch: {

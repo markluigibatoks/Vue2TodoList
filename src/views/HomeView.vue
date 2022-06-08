@@ -32,28 +32,28 @@ export default {
   methods: {
     ...mapActions(["fetchTodos"]),
 
-    toggleForm(){
-      this.showForm = !this.showForm
-    },
+    // toggleForm(){
+    //   this.showForm = !this.showForm
+    // },
 
-    closeForm(){
-      this.toggleForm()
-    },
+    // closeForm(){
+    //   this.toggleForm()
+    // },
 
-    openForm(group){
-      if(this.showForm){
-        console.log('A form is open.');
-        return;
-      }
+    // openForm(group){
+    //   if(this.showForm){
+    //     console.log('A form is open.');
+    //     return;
+    //   }
 
-      this.toggleForm()
+    //   this.toggleForm()
       
-      this.groupForForm = group
-    },
+    //   this.groupForForm = group
+    // },
     
-    addTodo(todo){
-      this.todos.push(todo)
-    }
+    // addTodo(todo){
+    //   this.todos.push(todo)
+    // }
   },
 
   components: {
@@ -68,11 +68,11 @@ export default {
     ...mapGetters (["allTodos", "todosByGroup"]),
   },
 
-  watch: {
-    todos(newValue, oldValue){
-      localStorage.setItem('todos', JSON.stringify(newValue))
-    }
-  }
+  // watch: {
+  //   todos(newValue, oldValue){
+  //     localStorage.setItem('todos', JSON.stringify(newValue))
+  //   }
+  // }
 }
 </script>
 

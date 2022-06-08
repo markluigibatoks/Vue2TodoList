@@ -34,9 +34,9 @@ const actions = {
   },
 
   addNewTodo({commit}, group){
-    console.log(group)
 
     const todo = {
+      id: Date.now(),
       title: '',
       badges: [],
       person: Math.floor(Math.random() * 70 + 1),
@@ -44,14 +44,43 @@ const actions = {
       order: 1,
     }
 
-    commit('addTodo', todo);
+
+    // Dili siya maka add 1 todo sa localStorage. By Object siya.
+    //Dili man ta maka mutate diri in practice, for now ako lang
+    //i get ang Todos from localStorage then i push sila balik.
+
+    let parsedTodo = JSON.parse(localStorage.getItem('todos')); 
+    if(parsedTodo == null) {parsedTodo = []}
+    //push todo at the beginning
+    parsedTodo.push(todo) 
+    localStorage.setItem('todos', JSON.stringify(parsedTodo));
+
+    //Change parsedTodo params to todo kung ilisan na ni siya ug API
+    commit('newTodo', parsedTodo);
+  },
+
+  updateTodo({commit}, params) {
+    let parsedTodo = JSON.parse(localStorage.getItem('todos')); 
+    if(parsedTodo == null) {parsedTodo = []}
+    
+    let objIndex = parsedTodo.findIndex(todo => todo.id == params.id)
+
+    parsedTodo[objIndex] = params
+    localStorage.setItem('todos', JSON.stringify(parsedTodo));
+
+    commit('newTodo', parsedTodo);
   }
 }
 
 const mutations = {
   setTodos: (state, todos) => state.todos = todos,
 
-  addTodo: (state, todo) => state.todos.unshift(todo)
+  newTodo: (state, todo) => {
+    
+    //Ilisan ni siya ug katong state.todos.push(todo)
+    state.todos = todo
+
+  }
 }
 
 export default {

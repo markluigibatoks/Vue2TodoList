@@ -21,8 +21,6 @@ export default {
 
   data() {
     return {
-      showForm : false,
-      groupForForm: 'untitled',
       todos: [],
     }
   },

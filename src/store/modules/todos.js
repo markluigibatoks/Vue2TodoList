@@ -49,18 +49,18 @@ const actions = {
     //Dili man ta maka mutate diri in practice, for now ako lang
     //i get ang Todos from localStorage then i push sila balik.
 
-    let parsedTodo = JSON.parse(localStorage.getItem('todos')); 
+    let parsedTodo = JSON.parse(localStorage.getItem('todos'))
     if(parsedTodo == null) {parsedTodo = []}
     //push todo at the beginning
     parsedTodo.push(todo) 
     localStorage.setItem('todos', JSON.stringify(parsedTodo));
 
     //Change parsedTodo params to todo kung ilisan na ni siya ug API
-    commit('newTodo', parsedTodo);
+    commit('newTodo', parsedTodo)
   },
 
   updateTodo({commit}, params) {
-    let parsedTodo = JSON.parse(localStorage.getItem('todos')); 
+    let parsedTodo = JSON.parse(localStorage.getItem('todos'))
     if(parsedTodo == null) {parsedTodo = []}
     
     let objIndex = parsedTodo.findIndex(todo => todo.id == params.id)
@@ -68,7 +68,17 @@ const actions = {
     parsedTodo[objIndex] = params
     localStorage.setItem('todos', JSON.stringify(parsedTodo));
 
-    commit('newTodo', parsedTodo);
+    commit('newTodo', parsedTodo)
+  },
+
+  deleteTodo({commit}, params){
+    let parsedTodo = JSON.parse(localStorage.getItem('todos'))
+    if(parsedTodo == null) {parsedTodo = []}
+
+    parsedTodo = parsedTodo.filter(todo => todo.id != params.id)
+    localStorage.setItem('todos', JSON.stringify(parsedTodo));
+    
+    commit('newTodo', parsedTodo)
   }
 }
 

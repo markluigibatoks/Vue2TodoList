@@ -12,21 +12,42 @@
 				</div>
 			</div>
 
-        <CardBody :badges="todo.badges"/>
+			<div class="card__body">
+				<div class="card__badges">
+					<Badge 
+							:title="badge" 
+							v-for="(badge, index) in todo.badges" 
+							:keys="index"/>
+				</div>
+			</div>
 
-        <CardFooter :personId="todo.person"/>
+			<div class="card__footer">
+				<div class="footer__user">
+						<img :src="imageSrc"/>
+						<div class="date_started">12-14 Jul</div>
+				</div>
+				<div class="footer__actions">
+					<button 
+						class="deleteTodoButton" 
+						title="Delete Card"
+						@click="onDeleteTodo"
+					>
+							<div class="button__body">
+								<i class="fa-solid fa-trash"></i>
+							</div>
+					</button>
+				</div>
+			</div>
     </div> 
 </template>
 
 <script>
-import CardBody from "./CardBody.vue";
-import CardFooter from "./CardFooter.vue";
+import Badge from './Badge.vue';
 import {mapActions} from "vuex";
 
 export default {
 	components: {
-		CardBody,
-		CardFooter,
+		Badge
 	},
 
 	data(){
@@ -35,6 +56,7 @@ export default {
 			editField: '',
 			typingTimer: '',
 			doneTypingInterval: 2500,
+			baseUrl: "https://i.pravatar.cc/150?img=",
 		}
 	},
 
@@ -44,6 +66,12 @@ export default {
 
 	created(){
 		this.title = this.todo.title
+	},
+
+	computed: {
+		imageSrc (){
+			return this.baseUrl + this.todo.person;
+		}
 	},
 
 	methods: {
@@ -66,7 +94,13 @@ export default {
 			})
 		},
 
-		...mapActions(['updateTodo'])
+		onDeleteTodo(){
+			if(confirm('Continue deleting the todo?')){
+				this.deleteTodo(this.todo)
+			}
+		},
+
+		...mapActions(['updateTodo', 'deleteTodo'])
 	},
 
 	watch: {
@@ -95,30 +129,78 @@ export default {
 		position: relative;
 	}
 
+	.card__body{
+    display: block;
+    
+    .card__badges {
+			display: flex;
+			justify-content: flex-start;
+			flex-wrap: wrap;
+    }
+	}
+
 	.card__header {
 
-	.card__title {
-		display: flex; 
-		align-items: center;
-		font-weight: bold;
-		color: #191919;
-		margin-bottom: 10px;
+		.card__title {
+			display: flex; 
+			align-items: center;
+			font-weight: bold;
+			color: #191919;
+			margin-bottom: 10px;
 
-		.card__title__prepend {
-			font-size: 24px;
-			margin-right: 10px;
-		}
+			.card__title__prepend {
+				font-size: 24px;
+				margin-right: 10px;
+			}
 
-		span {
-			display: inline-block;
-			width: 241px;
-			overflow: hidden;
-			text-overflow: ellipsis;
-			text-align: left;
-			font-size: 20px;
-			white-space: nowrap;
+			span {
+				display: inline-block;
+				width: 241px;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				text-align: left;
+				font-size: 20px;
+				white-space: nowrap;
+			}
 		}
 	}
-}
+
+	.card__footer{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #ADADAD;
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    width: calc(100% - 40px);
+
+    .footer__user {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+        img{
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+    }
+
+    .footer__actions {
+			button {
+				background: none;
+				border: none;
+				cursor: pointer;
+				font-size: 18px;
+				color: red;
+			}
+
+			button:hover{
+				opacity: 0.7
+			}
+    }
+	}
 </style>
 

@@ -5,11 +5,9 @@
         <TodoForm @on-close="closeForm" v-if="showForm" :group="groupForForm" @new-todo="addTodo"/>
 
         <template v-for="(group, groupKey) in todosByGroup" :keys="groupKey">
-          <Todos :todos="group" :title="(groupKey === 'regular') ? 'To do' : groupKey" @on-new-todo="openForm(groupKey)"/>
+          <Todos :todos="group" :title="(groupKey === 'todo') ? 'To do' : groupKey" @on-new-todo="openForm(groupKey)"/>
         </template>
 
-        <Todos title="Untitled" v-if="!Object.keys(todosByGroup).includes('untitled')" @on-new-todo="openForm('untitled')"/>
-      
       </div>
   </div>
 </template>
@@ -18,7 +16,6 @@
 // @ is an alias to /src
 import Todos from '@/components/Todos.vue'
 import TodoForm from '@/components/TodoForm.vue';
-
 
 export default {
   name: 'HomeView',
@@ -68,7 +65,12 @@ export default {
 
   computed: {
     todosByGroup() {
-      const group = {}
+      const group = {
+        todo: [],
+        doing: [],
+        done: [],
+        dynamic: []
+      }
 
       this.todos.forEach(curr => {
         if (!group[curr.group]) {

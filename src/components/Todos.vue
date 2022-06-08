@@ -1,19 +1,14 @@
 <template>
     <div class="todos">
-        <!-- To do -->
-        <!-- <TodoHeader :group="group"/> -->
-        <TodoHeader :group="title"/>
+        <TodoHeader :group="title.toUpperCase()"/>
 
-
-        <!-- List of Cards here -->
         <div 
           class="card__list" 
           v-for="todo in todos" :keys="todo.id">
             <Card :todo="todo"/>
         </div>
 
-
-        <TodoFooter :hasTodos="todos !== undefined" @on-new-todo="$emit('on-new-todo')"/>
+        <TodoFooter :hasTodos="todos.length > 0" @on-new-todo="$emit('on-new-todo')"/>
     </div>
 </template>
 

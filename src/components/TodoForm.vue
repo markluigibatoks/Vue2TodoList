@@ -7,6 +7,7 @@
       </div>
       <div class="title-group__input">
         <input 
+          autocomplete="off"
           autofocus
           type="text" 
           v-model="title" 

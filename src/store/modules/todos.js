@@ -23,20 +23,35 @@ const getters = {
       
       return group
     }
-
 }
 
 const actions = {
-    async fetchTodos ({commit}) {
-        let response = localStorage.getItem('todos')
-        let todos = JSON.parse(response)
+  fetchTodos ({commit}) {
+    let response = localStorage.getItem('todos')
+    let todos = response != null ? JSON.parse(response) : []
 
-        commit('setTodos', todos)
+    commit('setTodos', todos)
+  },
+
+  addNewTodo({commit}, group){
+    console.log(group)
+
+    const todo = {
+      title: '',
+      badges: [],
+      person: Math.floor(Math.random() * 70 + 1),
+      group: group,
+      order: 1,
     }
+
+    commit('addTodo', todo);
+  }
 }
 
 const mutations = {
-    setTodos: (state, todos) => state.todos = todos
+  setTodos: (state, todos) => state.todos = todos,
+
+  addTodo: (state, todo) => state.todos.unshift(todo)
 }
 
 export default {

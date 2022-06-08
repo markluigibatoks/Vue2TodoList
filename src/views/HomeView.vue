@@ -5,7 +5,7 @@
         <!-- <TodoForm @on-close="closeForm" v-if="showForm" :group="groupForForm" @new-todo="addTodo"/> -->
 
         <template v-for="(group, groupKey) in todosByGroup" :keys="groupKey">
-          <Todos :todos="group" :title="(groupKey === 'todo') ? 'To do' : groupKey" @on-new-todo="openForm(groupKey)"/>
+          <Todos :todos="group" :title="groupKey"/>
         </template>
 
       </div>

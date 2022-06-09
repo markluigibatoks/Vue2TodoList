@@ -1,225 +1,235 @@
 <template>
-    <div class="card">
+  <div class="card">
+    <div class="card__header">
+      <div class="card__title">
+        <div class="card__title__prepend">
+          <i class="fa-regular fa-circle-check"></i>
+          <!-- <i class="fa-regular fa-hourglass"></i> -->
+        </div>
+        <span
+          v-show="!showField('title')"
+          @click="focusField('title')"
+        >{{ title }}</span>
+        <input
+          v-show="showField('title')"
+          v-model="title"
+          type="text"
+          @focus="focusField('title')"
+          @blur="blurField"
+        >
+      </div>
+    </div>
 
-			<div class="card__header">
-				<div class="card__title">
-						<div class="card__title__prepend">
-						<i class="fa-regular fa-circle-check"></i>
-						<!-- <i class="fa-regular fa-hourglass"></i> -->
-						</div>
-						<span v-show="!showField('title')" @click="focusField('title')">{{title}}</span>
-						<input v-show="showField('title')" type="text" v-model="title" @focus="focusField('title')" @blur="blurField">
-				</div>
-			</div>
+    <div class="card__body">
+      <div class="card__badges">
+        <Badge
+          v-for="(badge, index) in filterBadges"
+          :title="badge.name"
+          :keys="index"
+          :deletable="showAutocomplete"
+          @on-remove="onRemove(badge)"
+        />
 
-			<div class="card__body" >
-				<div class="card__badges">
-					<Badge 
-							:title="badge.name" 
-							v-for="(badge, index) in filterBadges" 
-							:keys="index"
-							:deletable="showAutocomplete"
-							@on-remove="onRemove(badge)"/>
+        <div
+          v-if="showAutocomplete"
+          class="autocomplete"
+        >
+          <div class="badge-group">
+            <div class="badge-group__input">
+              <input
+                id="searchTxt"
+                v-model="searchTxt"
+                type="text"
+                placeholder="Search for a badge..."
+                @focus="showAutocomplete = true"
+              >
+            </div>
+          </div>
+          <ul
+            class="badge-list"
+          >
+            <li
+              v-for="badge in searchResults"
+              class="badge-list__item"
+              @click="selectBadge(badge)"
+            >
+              {{ badge.name }}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
 
-					<div class="autocomplete" v-if="showAutocomplete">
-							<div class="badge-group">
-									<div class="badge-group__input">
-										<input 
-										id="searchTxt"
-										type="text" 
-										v-model="searchTxt"
-										placeholder="Search for a badge..."
-										@focus="showAutocomplete = true"
-										/>
-									</div>
-							</div>
-							<ul 
-								class="badge-list"
-								>
-									<li class="badge-list__item"
-										@click="selectBadge(badge)"
-										v-for="badge in searchResults"
-										>
-										{{badge.name}}
-									</li>
-							</ul>
-					</div>
+    <div class="card__footer">
+      <div class="footer__user">
+        <img :src="imageSrc">
+        <div class="date_started">
+          12-14 Jul
+        </div>
+      </div>
+      <div class="footer__actions">
+        <button
+          class="deleteTodoButton"
+          title="Delete Card"
+          @click="onDeleteTodo"
+        >
+          <div class="button__body">
+            <i class="fa-solid fa-trash"></i>
+          </div>
+        </button>
 
-				</div>
-			</div>
-
-			<div class="card__footer">
-				<div class="footer__user">
-						<img :src="imageSrc"/>
-						<div class="date_started">12-14 Jul</div>
-				</div>
-				<div class="footer__actions">
-					
-					<button 
-						class="deleteTodoButton" 
-						title="Delete Card"
-						@click="onDeleteTodo"
-					>
-							<div class="button__body">
-								<i class="fa-solid fa-trash"></i>
-							</div>
-					</button>
-
-					<button 
-						class="showAutocomplete"
-						@click="showAutocomplete = !showAutocomplete"
-					>
-							<div class="button__body">
-								<i class="fa-solid fa-dragon"></i>
-							</div>
-					</button>
-				</div>
-			</div>
-    </div> 
+        <button
+          class="showAutocomplete"
+          @click="showAutocomplete = !showAutocomplete"
+        >
+          <div class="button__body">
+            <i class="fa-solid fa-dragon"></i>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import Badge from './Badge.vue';
-import {mapActions} from "vuex";
+import Badge from './Badge.vue'
+import { mapActions } from 'vuex'
 
 export default {
-	components: {
-		Badge
-	},
+  components: {
+    Badge
+  },
 
-	data(){
-		return {
-			title: '',
-			editField: '',
-			showAutocomplete: false,
-			typingTimer: '',
-			doneTypingInterval: 2500,
-			baseUrl: "https://i.pravatar.cc/150?img=",
+  props: {
+    todo: {}
+  },
 
-			defaultBadges: [],
-			searchResults: [],
-			searchTxt: '',
-		}
-	},
+  data () {
+    return {
+      title: '',
+      editField: '',
+      showAutocomplete: false,
+      typingTimer: '',
+      doneTypingInterval: 2500,
+      baseUrl: 'https://i.pravatar.cc/150?img=',
 
-	props: {
-			todo: {},
-	},
+      defaultBadges: [],
+      searchResults: [],
+      searchTxt: ''
+    }
+  },
 
-	created(){
-		this.title = this.todo.title
-		this.defaultBadges = [
-				{ name: "Low", selected: false, },
-				{ name: "Medium", selected: false, },
-				{ name: "High", selected: false, },
-				{ name: "On Track", selected: false, },
-				{ name: "Off Track", selected: false, },
-				{ name: "At Risk", selected: false, },
-		]
+  computed: {
+    imageSrc () {
+      return this.baseUrl + this.todo.person
+    },
 
-		this.todo.badges.forEach(badge => {
-			let i = this.defaultBadges.findIndex(b => b.name == badge)
-			this.defaultBadges[i].selected = true
-		})
-	},
+    filterResults () {
+      this.searchResults = this.defaultBadges.filter(badge => !badge.selected)
+    },
 
-	computed: {
-		imageSrc (){
-			return this.baseUrl + this.todo.person;
-		},
+    filterBadges () {
+      return this.defaultBadges.filter(badge => badge.selected)
+    },
 
-		filterResults() {
-			this.searchResults = this.defaultBadges.filter(badge => !badge.selected);
-		},
+    getAllSelectedBadges () {
+      const badges = []
+      this.defaultBadges.forEach(curr => {
+        if (curr.selected) {
+          badges.push(curr.name)
+        }
+      })
 
-		filterBadges() {
-			return this.defaultBadges.filter(badge => badge.selected)
-		},
+      return badges
+    }
+  },
 
-		getAllSelectedBadges() {
-			const badges = []
-			this.defaultBadges.forEach (curr => {
+  created () {
+    this.title = this.todo.title
+    this.defaultBadges = [
+      { name: 'Low', selected: false },
+      { name: 'Medium', selected: false },
+      { name: 'High', selected: false },
+      { name: 'On Track', selected: false },
+      { name: 'Off Track', selected: false },
+      { name: 'At Risk', selected: false }
+    ]
 
-				if (curr.selected){
-					badges.push(curr.name)
-				}
-			})
+    this.todo.badges.forEach(badge => {
+      const i = this.defaultBadges.findIndex(b => b.name == badge)
+      this.defaultBadges[i].selected = true
+    })
+  },
 
-			return badges
+  methods: {
+    focusField (name) { // name of input field
+      this.editField = name
+    },
 
-		}
-	},
+    onRemove (badge) {
+      this.defaultBadges = this.defaultBadges.map(b => b == badge ? { ...b, selected: false } : b)
+      this.changeBadges()
+    },
 
-	methods: {
-		focusField(name){//name of input field
-			this.editField = name
-		},
+    blurField () {
+      this.editField = ''
+    },
 
-		onRemove(badge){
-			this.defaultBadges = this.defaultBadges.map(b => b == badge ? { ...b, selected: false } : b);
-			this.changeBadges()
-		},
+    showField (name) {
+      return this.editField == name || this.title == ''
+    },
 
-		blurField(){
-			this.editField = ''
-		},
+    doneTyping () {
+      console.log('User done typing!!!')
+      this.updateTodo({
+        ...this.todo, title: this.title
+      })
+    },
 
-		showField(name){
-			return this.editField == name || this.title == ''
-		},
+    changeBadges () {
+      this.updateTodo({
+        ...this.todo, badges: this.getAllSelectedBadges
+      })
+    },
 
-		doneTyping(){
-			console.log('User done typing!!!')
-			this.updateTodo({
-				...this.todo, title: this.title
-			})
-		},
+    onDeleteTodo () {
+      if (confirm('Continue deleting the todo?')) {
+        this.deleteTodo(this.todo)
+      }
+    },
 
-		changeBadges(){
-			this.updateTodo({
-				...this.todo, badges: this.getAllSelectedBadges
-			})
-		},
+    selectBadge (badge) {
+      this.defaultBadges = this.defaultBadges.map(b => b == badge ? { ...b, selected: true } : b)
 
-		onDeleteTodo(){
-			if(confirm('Continue deleting the todo?')){
-				this.deleteTodo(this.todo)
-			}
-		},
+      this.searchTxt = ''
+      this.show = false
 
-		selectBadge(badge) {
-			
-			this.defaultBadges = this.defaultBadges.map(b => b == badge ? { ...b, selected: true } : b);
-			
-				this.searchTxt = "";
-				this.show = false;
+      this.showAutocomplete = false
 
-			this.showAutocomplete = false
+      this.changeBadges()
+    },
 
-			this.changeBadges()
-		},
+    ...mapActions(['updateTodo', 'deleteTodo'])
+  },
 
-		...mapActions(['updateTodo', 'deleteTodo'])
-	},
+  watch: {
+    title (newValue, oldValue) {
+      clearTimeout(this.typingTimer)
 
-	watch: {
-		title (newValue, oldValue){
-			clearTimeout (this.typingTimer)
+      if (this.title != this.todo.title) { // if input title has changes
+        this.typingTimer = setTimeout(this.doneTyping, this.doneTypingInterval)
+      }
+    },
 
-			if (this.title != this.todo.title) { //if input title has changes
-				this.typingTimer = setTimeout(this.doneTyping, this.doneTypingInterval)
-			}
-		},
+    searchTxt (newValue, oldValue) {
+      this.searchResults = this.defaultBadges.filter(badge => badge.name.toLowerCase().includes(newValue.trim().toLowerCase()) && !badge.selected)
+    },
 
-		searchTxt (newValue, oldValue) {
-			this.searchResults = this.defaultBadges.filter(badge => badge.name.toLowerCase().includes(newValue.trim().toLowerCase()) && !badge.selected);
-		},
-
-		defaultBadges (newValue, oldValue) {
-			this.filterResults
-			this.filterBadges
-		}
-	}
+    defaultBadges (newValue, oldValue) {
+      this.filterResults
+      this.filterBadges
+    }
+  }
 }
 
 </script>
@@ -240,7 +250,7 @@ export default {
     display: block;
 		min-height: 80px;
 		cursor: pointer;
-    
+
     .card__badges {
 			display: flex;
 			justify-content: flex-start;
@@ -251,7 +261,7 @@ export default {
 	.card__header {
 
 		.card__title {
-			display: flex; 
+			display: flex;
 			align-items: center;
 			font-weight: bold;
 			color: #191919;
@@ -304,7 +314,7 @@ export default {
 				cursor: pointer;
 				font-size: 18px;
 			}
-			
+
 			button:hover{
 				opacity: 0.7
 			}
@@ -366,4 +376,3 @@ export default {
   }
 	}
 </style>
-

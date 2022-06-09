@@ -3,7 +3,7 @@
     <!-- <nav>
       <router-link to="/">Home</router-link> |
     </nav> -->
-    <router-view/>
+    <router-view />
   </div>
 </template>
 
@@ -15,8 +15,6 @@
   color: #191919;
   font-size: 18px;
 }
-
-
 
 * {box-sizing: border-box !important;}
 

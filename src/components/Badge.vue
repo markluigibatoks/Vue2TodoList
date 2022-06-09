@@ -1,41 +1,42 @@
 <template>
-    <span 
-        class="badges" 
-        :class="[getClass]">
+  <span
+    class="badges"
+    :class="[getClass]"
+  >
 
-        {{title}}
+    {{ title }}
 
-        <div
-            class="badges__button"
-            @click="$emit('on-remove')"
-            v-if="deletable"
-         >
-            <i class="fa-solid fa-circle-xmark" > </i>
-        </div>
+    <div
+      v-if="deletable"
+      class="badges__button"
+      @click="$emit('on-remove')"
+    >
+      <i class="fa-solid fa-circle-xmark"> </i>
+    </div>
 
-    </span>
+  </span>
 </template>
 
 <script>
-    export default {
-        name: 'Badge',
+export default {
+  name: 'Badge',
 
-        emits: ['on-remove'],
-
-        props: {
-            title: String,
-            deletable: {
-                type: Boolean,
-                default: false,
-            }
-        },
-
-        computed: {
-            getClass(){
-                return this.title.trim().toLowerCase().replace(' ', '__');
-            }
-        }
+  props: {
+    title: String,
+    deletable: {
+      type: Boolean,
+      default: false
     }
+  },
+
+  emits: ['on-remove'],
+
+  computed: {
+    getClass () {
+      return this.title.trim().toLowerCase().replace(' ', '__')
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -46,7 +47,7 @@
     margin-right: 10px;
     display: inline-block;
     margin-bottom: 10px;
-    
+
     div {
         display: inline;
         cursor: pointer;

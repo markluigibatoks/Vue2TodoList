@@ -1,12 +1,16 @@
 <template>
   <div class="wrapper">
-      <div class="content">
-        
-        <template v-for="(group, groupKey) in todosByGroup" :keys="groupKey">
-          <Todos :todos="group" :title="groupKey"/>
-        </template>
-
-      </div>
+    <div class="content">
+      <template
+        v-for="(group, groupKey) in todosByGroup"
+        :keys="groupKey"
+      >
+        <Todos
+          :todos="group"
+          :title="groupKey"
+        />
+      </template>
+    </div>
   </div>
 </template>
 
@@ -14,32 +18,32 @@
 // @ is an alias to /src
 import Todos from '@/components/Todos.vue'
 
-import {mapActions, mapGetters} from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'HomeView',
 
-  data() {
+  data () {
     return {
-      todos: [],
+      todos: []
     }
   },
 
   methods: {
-    ...mapActions(["fetchTodos"]),
+    ...mapActions(['fetchTodos'])
   },
 
   components: {
-    Todos,
+    Todos
   },
 
-  created(){ 
+  created () {
     this.fetchTodos()
   },
 
   computed: {
-    ...mapGetters (["allTodos", "todosByGroup"]),
-  },
+    ...mapGetters(['allTodos', 'todosByGroup'])
+  }
 }
 </script>
 
@@ -54,5 +58,4 @@ export default {
     }
   }
 
-  
 </style>

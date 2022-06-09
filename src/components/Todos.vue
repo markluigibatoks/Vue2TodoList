@@ -1,61 +1,62 @@
 <template>
-    <div class="todos">
-        <TodoHeader :group="getTitle.toUpperCase()"/>
+  <div class="todos">
+    <TodoHeader :group="getTitle.toUpperCase()" />
 
-        <div 
-          class="card__list" 
-          v-for="todo in todos" :keys="todo.id">
-            <Card :todo="todo"/>
-        </div>
-
-        <div class="todo__footer">
-            <div 
-                class="footer__actions" 
-                :class="{no__child: !todos.length > 0}"
-            >
-                <button 
-                class="button"
-                @click="addNewTodo(title)"
-                >
-                    <div class="button__prepend">
-                        <i class="fa-solid fa-circle-plus"></i>
-                    </div>
-                    Add Task
-                </button>
-            </div>
-        </div>
+    <div
+      v-for="todo in todos"
+      class="card__list"
+      :keys="todo.id"
+    >
+      <Card :todo="todo" />
     </div>
 
+    <div class="todo__footer">
+      <div
+        class="footer__actions"
+        :class="{no__child: !todos.length > 0}"
+      >
+        <button
+          class="button"
+          @click="addNewTodo(title)"
+        >
+          <div class="button__prepend">
+            <i class="fa-solid fa-circle-plus"></i>
+          </div>
+          Add Task
+        </button>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import TodoHeader from './TodoHeader.vue';
-import Card from './Card.vue';
-import {mapActions} from 'vuex';
+import TodoHeader from './TodoHeader.vue'
+import Card from './Card.vue'
+import { mapActions } from 'vuex'
 
 export default {
-  name: "Todo",
+  name: 'Todo',
 
-  components: { 
-    TodoHeader, 
-    Card, 
+  components: {
+    TodoHeader,
+    Card
   },
 
   props: {
     todos: [],
-    title: String,
+    title: String
   },
 
   computed: {
-    getTitle(){
-      if(this.title === 'todo')  return 'To do' 
-      else if(this.title === 'dynamic') return 'Untitled'
-      else return this.title
+    getTitle () {
+      if (this.title === 'todo') return 'To do'
+      else if (this.title === 'dynamic') return 'Untitled'
+      return this.title
     }
   },
 
   methods: {
-    ...mapActions(['addNewTodo']),
+    ...mapActions(['addNewTodo'])
   }
 }
 </script>
@@ -84,7 +85,7 @@ export default {
       border-radius: 12px;
       font-weight: 600;
       display: flex;
-      align-items: center; 
+      align-items: center;
       justify-content: center;
       cursor: pointer;
 

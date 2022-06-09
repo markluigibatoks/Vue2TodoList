@@ -157,6 +157,7 @@ export default {
 
 		onRemove(badge){
 			this.defaultBadges = this.defaultBadges.map(b => b == badge ? { ...b, selected: false } : b);
+			this.changeBadges()
 		},
 
 		blurField(){

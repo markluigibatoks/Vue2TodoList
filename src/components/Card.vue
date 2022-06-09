@@ -24,8 +24,8 @@
       <div class="card__badges">
         <Badge
           v-for="(badge, index) in filterBadges"
+          :key="index"
           :title="badge.name"
-          :keys="index"
           :deletable="showAutocomplete"
           @on-remove="onRemove(badge)"
         />
@@ -49,7 +49,8 @@
             class="badge-list"
           >
             <li
-              v-for="badge in searchResults"
+              v-for="(badge, index) in searchResults"
+              :key="index"
               class="badge-list__item"
               @click="selectBadge(badge)"
             >
@@ -96,12 +97,18 @@ import Badge from './Badge.vue'
 import { mapActions } from 'vuex'
 
 export default {
+  name: 'CardComponent',
   components: {
     Badge
   },
 
   props: {
-    todo: {}
+    todo: {
+      type: Object,
+      default () {
+        return { }
+      }
+    }
   },
 
   data () {
@@ -125,7 +132,7 @@ export default {
     },
 
     filterResults () {
-      this.searchResults = this.defaultBadges.filter(badge => !badge.selected)
+      return this.defaultBadges.filter(badge => !badge.selected)
     },
 
     filterBadges () {
@@ -144,6 +151,24 @@ export default {
     }
   },
 
+  watch: {
+    title () {
+      clearTimeout(this.typingTimer)
+
+      if (this.title !== this.todo.title) { // if input title has changes
+        this.typingTimer = setTimeout(this.doneTyping, this.doneTypingInterval)
+      }
+    },
+
+    searchTxt (newValue) {
+      this.searchResults = this.defaultBadges.filter(badge => badge.name.toLowerCase().includes(newValue.trim().toLowerCase()) && !badge.selected)
+    },
+
+    defaultBadges () {
+      this.searchResults = this.filterResults
+    }
+  },
+
   created () {
     this.title = this.todo.title
     this.defaultBadges = [
@@ -156,7 +181,7 @@ export default {
     ]
 
     this.todo.badges.forEach(badge => {
-      const i = this.defaultBadges.findIndex(b => b.name == badge)
+      const i = this.defaultBadges.findIndex(b => b.name === badge)
       this.defaultBadges[i].selected = true
     })
   },
@@ -167,7 +192,7 @@ export default {
     },
 
     onRemove (badge) {
-      this.defaultBadges = this.defaultBadges.map(b => b == badge ? { ...b, selected: false } : b)
+      this.defaultBadges = this.defaultBadges.map(b => b === badge ? { ...b, selected: false } : b)
       this.changeBadges()
     },
 
@@ -176,7 +201,7 @@ export default {
     },
 
     showField (name) {
-      return this.editField == name || this.title == ''
+      return this.editField === name || this.title === ''
     },
 
     doneTyping () {
@@ -199,7 +224,7 @@ export default {
     },
 
     selectBadge (badge) {
-      this.defaultBadges = this.defaultBadges.map(b => b == badge ? { ...b, selected: true } : b)
+      this.defaultBadges = this.defaultBadges.map(b => b === badge ? { ...b, selected: true } : b)
 
       this.searchTxt = ''
       this.show = false
@@ -210,169 +235,149 @@ export default {
     },
 
     ...mapActions(['updateTodo', 'deleteTodo'])
-  },
+  }
+}
+</script>
 
-  watch: {
-    title (newValue, oldValue) {
-      clearTimeout(this.typingTimer)
+<style lang="scss" scoped>
+.card {
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #dadada;
+  width: 100%;
+  min-height: 183px;
+  margin-bottom: 20px;
+  padding-bottom: 80px;
+  position: relative;
+}
 
-      if (this.title != this.todo.title) { // if input title has changes
-        this.typingTimer = setTimeout(this.doneTyping, this.doneTypingInterval)
-      }
-    },
+.card__body{
+  display: block;
+  min-height: 80px;
+  cursor: pointer;
 
-    searchTxt (newValue, oldValue) {
-      this.searchResults = this.defaultBadges.filter(badge => badge.name.toLowerCase().includes(newValue.trim().toLowerCase()) && !badge.selected)
-    },
+  .card__badges {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+}
 
-    defaultBadges (newValue, oldValue) {
-      this.filterResults
-      this.filterBadges
+.card__header {
+
+  .card__title {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    color: #191919;
+    margin-bottom: 10px;
+
+    .card__title__prepend {
+      font-size: 24px;
+      margin-right: 10px;
+    }
+
+    span {
+      display: inline-block;
+      width: 241px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: left;
+      font-size: 20px;
+      white-space: nowrap;
     }
   }
 }
 
-</script>
+.card__footer{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #ADADAD;
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  width: calc(100% - 40px);
 
-<style lang="scss" scoped>
-	.card {
-		padding: 20px;
-		border-radius: 12px;
-		border: 1px solid #dadada;
-		width: 100%;
-		min-height: 183px;
-		margin-bottom: 20px;
-		padding-bottom: 80px;
-		position: relative;
-	}
+  .footer__user {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 
-	.card__body{
-    display: block;
-		min-height: 80px;
-		cursor: pointer;
-
-    .card__badges {
-			display: flex;
-			justify-content: flex-start;
-			flex-wrap: wrap;
+    img{
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        margin-right: 10px;
     }
-	}
-
-	.card__header {
-
-		.card__title {
-			display: flex;
-			align-items: center;
-			font-weight: bold;
-			color: #191919;
-			margin-bottom: 10px;
-
-			.card__title__prepend {
-				font-size: 24px;
-				margin-right: 10px;
-			}
-
-			span {
-				display: inline-block;
-				width: 241px;
-				overflow: hidden;
-				text-overflow: ellipsis;
-				text-align: left;
-				font-size: 20px;
-				white-space: nowrap;
-			}
-		}
-	}
-
-	.card__footer{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: #ADADAD;
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    width: calc(100% - 40px);
-
-    .footer__user {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-
-        img{
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-    }
-
-    .footer__actions {
-			button {
-				background: none;
-				border: none;
-				cursor: pointer;
-				font-size: 18px;
-			}
-
-			button:hover{
-				opacity: 0.7
-			}
-
-			.deleteTodoButton{
-				color: red;
-			}
-    }
-	}
-
-	.autocomplete {
-		position: relative;
-
-	.badge-group {
-
-		.badge-group__input {
-			input {
-				width: 100%;
-				font-size: inherit;
-				border: none;
-				border-bottom: 1px solid #000;
-				background: none;
-				padding: 10px;
-			}
-		}
   }
 
-  .badge-list {
-    list-style: none;
-    text-align: left;
-    background: #fff;
-    padding: 0;
-    margin-top: 0;
-    width: 100%;
-    position: absolute;
-    top: 40px;
-    left: 0;
-		background: #fff;
-		z-index: 1;
-
-    li {
-      padding: 10px;
-      border-bottom: 1px solid #ddd;
+  .footer__actions {
+    button {
+      background: none;
+      border: none;
       cursor: pointer;
+      font-size: 18px;
     }
 
-    li:hover {
-      background: #000;
-      color: #fff;
+    button:hover{
+      opacity: 0.7
     }
 
-    li:last-child {
-      border-bottom: none;
+    .deleteTodoButton{
+      color: red;
     }
   }
+}
 
-  .selected-badges {
-    padding: 0 0 30px;
+.autocomplete {
+  position: relative;
+
+.badge-group {
+
+  .badge-group__input {
+    input {
+      width: 100%;
+      font-size: inherit;
+      border: none;
+      border-bottom: 1px solid #000;
+      background: none;
+      padding: 10px;
+    }
   }
-	}
+}
+
+.badge-list {
+  list-style: none;
+  text-align: left;
+  background: #fff;
+  padding: 0;
+  margin-top: 0;
+  width: 100%;
+  position: absolute;
+  top: 40px;
+  left: 0;
+  background: #fff;
+  z-index: 1;
+
+  li {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+  }
+
+  li:hover {
+    background: #000;
+    color: #fff;
+  }
+
+  li:last-child {
+    border-bottom: none;
+  }
+}
+
+.selected-badges {
+  padding: 0 0 30px;
+}
+}
 </style>

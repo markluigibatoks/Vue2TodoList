@@ -19,10 +19,13 @@
 
 <script>
 export default {
-  name: 'Badge',
+  name: 'BadgeComponent',
 
   props: {
-    title: String,
+    title: {
+      type: String,
+      default: ''
+    },
     deletable: {
       type: Boolean,
       default: false

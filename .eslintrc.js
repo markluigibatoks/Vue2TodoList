@@ -95,12 +95,5 @@ module.exports = {
     'vue/v-bind-style': ['error', 'shorthand'],
     'vue/v-on-style': ['error', 'shorthand'],
     'no-labels': 'off'
-  },
-
-  extends: [
-    'eslint:recommended',
-    'plugin:vue/essential',
-    '@vue/standard',
-    'plugin:vue/recommended'
-  ]
+  }
 }

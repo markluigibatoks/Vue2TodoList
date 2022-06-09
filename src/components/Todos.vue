@@ -4,8 +4,8 @@
 
     <div
       v-for="todo in todos"
+      :key="todo.id"
       class="card__list"
-      :keys="todo.id"
     >
       <Card :todo="todo" />
     </div>
@@ -35,7 +35,7 @@ import Card from './Card.vue'
 import { mapActions } from 'vuex'
 
 export default {
-  name: 'Todo',
+  name: 'TodoComponent',
 
   components: {
     TodoHeader,
@@ -43,8 +43,16 @@ export default {
   },
 
   props: {
-    todos: [],
-    title: String
+    todos: {
+      type: Array,
+      default () {
+        return []
+      }
+    },
+    title: {
+      type: String,
+      default: ''
+    }
   },
 
   computed: {

@@ -14,7 +14,10 @@
 export default {
   name: 'TodoHeader',
   props: {
-    group: String
+    group: {
+      type: String,
+      default: 'dynamic'
+    }
   }
 }
 </script>

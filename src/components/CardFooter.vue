@@ -15,7 +15,10 @@
 export default {
   name: 'CardFooter',
   props: {
-    personId: Number
+    personId: {
+      type: Number,
+      default: -1
+    }
   },
   data () {
     return {

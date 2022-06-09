@@ -1,5 +1,9 @@
 <template>
-  <div class="todos">
+  <div
+    class="todos"
+    @drop.prevent="drop"
+    @dragover.prevent
+  >
     <TodoHeader :group="getTitle.toUpperCase()" />
 
     <div
@@ -7,7 +11,10 @@
       :key="todo.id"
       class="card__list"
     >
-      <Card :todo="todo" />
+      <Card
+        :id="todo.id"
+        :todo="todo"
+      />
     </div>
 
     <div class="todo__footer">
@@ -32,7 +39,7 @@
 <script>
 import TodoHeader from './TodoHeader.vue'
 import Card from './Card.vue'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'TodoComponent',
@@ -64,7 +71,15 @@ export default {
   },
 
   methods: {
-    ...mapActions(['addNewTodo'])
+    ...mapActions(['addNewTodo', 'updateTodo']),
+    ...mapGetters(['allTodos']),
+
+    drop (e) {
+      const todoId = Number(e.dataTransfer.getData('card_id'))
+      const todoIndex = this.allTodos().findIndex(todo => todo.id === todoId)
+      const todo = this.allTodos()[todoIndex]
+      this.updateTodo({ ...todo, group: this.title })
+    }
   }
 }
 </script>

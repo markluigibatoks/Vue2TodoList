@@ -1,5 +1,9 @@
 <template>
-  <div class="card">
+  <div
+    class="card"
+    draggable="true"
+    @dragstart="dragStart($event)"
+  >
     <div class="card__header">
       <div class="card__title">
         <div class="card__title__prepend">
@@ -187,6 +191,8 @@ export default {
   },
 
   methods: {
+    ...mapActions(['updateTodo', 'deleteTodo']),
+
     focusField (name) { // name of input field
       this.editField = name
     },
@@ -234,7 +240,10 @@ export default {
       this.changeBadges()
     },
 
-    ...mapActions(['updateTodo', 'deleteTodo'])
+    dragStart (e) {
+      const target = e.target
+      e.dataTransfer.setData('card_id', target.id)
+    }
   }
 }
 </script>

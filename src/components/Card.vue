@@ -12,12 +12,39 @@
 				</div>
 			</div>
 
-			<div class="card__body">
+			<div class="card__body" >
 				<div class="card__badges">
 					<Badge 
-							:title="badge" 
-							v-for="(badge, index) in todo.badges" 
-							:keys="index"/>
+							:title="badge.name" 
+							v-for="(badge, index) in filterBadges" 
+							:keys="index"
+							:deletable="showAutocomplete"
+							@on-remove="onRemove(badge)"/>
+
+					<div class="autocomplete" v-if="showAutocomplete">
+							<div class="badge-group">
+									<div class="badge-group__input">
+										<input 
+										id="searchTxt"
+										type="text" 
+										v-model="searchTxt"
+										placeholder="Search for a badge..."
+										@focus="showAutocomplete = true"
+										/>
+									</div>
+							</div>
+							<ul 
+								class="badge-list"
+								>
+									<li class="badge-list__item"
+										@click="selectBadge(badge)"
+										v-for="badge in searchResults"
+										>
+										{{badge.name}}
+									</li>
+							</ul>
+					</div>
+
 				</div>
 			</div>
 
@@ -27,6 +54,7 @@
 						<div class="date_started">12-14 Jul</div>
 				</div>
 				<div class="footer__actions">
+					
 					<button 
 						class="deleteTodoButton" 
 						title="Delete Card"
@@ -34,6 +62,15 @@
 					>
 							<div class="button__body">
 								<i class="fa-solid fa-trash"></i>
+							</div>
+					</button>
+
+					<button 
+						class="showAutocomplete"
+						@click="showAutocomplete = !showAutocomplete"
+					>
+							<div class="button__body">
+								<i class="fa-solid fa-dragon"></i>
 							</div>
 					</button>
 				</div>
@@ -54,9 +91,14 @@ export default {
 		return {
 			title: '',
 			editField: '',
+			showAutocomplete: false,
 			typingTimer: '',
 			doneTypingInterval: 2500,
 			baseUrl: "https://i.pravatar.cc/150?img=",
+
+			defaultBadges: [],
+			searchResults: [],
+			searchTxt: '',
 		}
 	},
 
@@ -66,17 +108,55 @@ export default {
 
 	created(){
 		this.title = this.todo.title
+		this.defaultBadges = [
+				{ name: "Low", selected: false, },
+				{ name: "Medium", selected: false, },
+				{ name: "High", selected: false, },
+				{ name: "On Track", selected: false, },
+				{ name: "Off Track", selected: false, },
+				{ name: "At Risk", selected: false, },
+		]
+
+		this.todo.badges.forEach(badge => {
+			let i = this.defaultBadges.findIndex(b => b.name == badge)
+			this.defaultBadges[i].selected = true
+		})
 	},
 
 	computed: {
 		imageSrc (){
 			return this.baseUrl + this.todo.person;
+		},
+
+		filterResults() {
+			this.searchResults = this.defaultBadges.filter(badge => !badge.selected);
+		},
+
+		filterBadges() {
+			return this.defaultBadges.filter(badge => badge.selected)
+		},
+
+		getAllSelectedBadges() {
+			const badges = []
+			this.defaultBadges.forEach (curr => {
+
+				if (curr.selected){
+					badges.push(curr.name)
+				}
+			})
+
+			return badges
+
 		}
 	},
 
 	methods: {
 		focusField(name){//name of input field
 			this.editField = name
+		},
+
+		onRemove(badge){
+			this.defaultBadges = this.defaultBadges.map(b => b == badge ? { ...b, selected: false } : b);
 		},
 
 		blurField(){
@@ -94,23 +174,49 @@ export default {
 			})
 		},
 
+		changeBadges(){
+			this.updateTodo({
+				...this.todo, badges: this.getAllSelectedBadges
+			})
+		},
+
 		onDeleteTodo(){
 			if(confirm('Continue deleting the todo?')){
 				this.deleteTodo(this.todo)
 			}
 		},
 
+		selectBadge(badge) {
+			
+			this.defaultBadges = this.defaultBadges.map(b => b == badge ? { ...b, selected: true } : b);
+			
+				this.searchTxt = "";
+				this.show = false;
+
+			this.showAutocomplete = false
+
+			this.changeBadges()
+		},
+
 		...mapActions(['updateTodo', 'deleteTodo'])
 	},
 
 	watch: {
-		title(newValue, oldValue){
-			clearTimeout(this.typingTimer)
+		title (newValue, oldValue){
+			clearTimeout (this.typingTimer)
 
-			if(this.title != this.todo.title) //if input title has changes
-			{
+			if (this.title != this.todo.title) { //if input title has changes
 				this.typingTimer = setTimeout(this.doneTyping, this.doneTypingInterval)
 			}
+		},
+
+		searchTxt (newValue, oldValue) {
+			this.searchResults = this.defaultBadges.filter(badge => badge.name.toLowerCase().includes(newValue.trim().toLowerCase()) && !badge.selected);
+		},
+
+		defaultBadges (newValue, oldValue) {
+			this.filterResults
+			this.filterBadges
 		}
 	}
 }
@@ -125,12 +231,14 @@ export default {
 		width: 100%;
 		min-height: 183px;
 		margin-bottom: 20px;
-		padding-bottom: 40px;
+		padding-bottom: 80px;
 		position: relative;
 	}
 
 	.card__body{
     display: block;
+		min-height: 80px;
+		cursor: pointer;
     
     .card__badges {
 			display: flex;
@@ -194,13 +302,67 @@ export default {
 				border: none;
 				cursor: pointer;
 				font-size: 18px;
-				color: red;
 			}
-
+			
 			button:hover{
 				opacity: 0.7
 			}
+
+			.deleteTodoButton{
+				color: red;
+			}
     }
+	}
+
+	.autocomplete {
+		position: relative;
+
+	.badge-group {
+
+		.badge-group__input {
+			input {
+				width: 100%;
+				font-size: inherit;
+				border: none;
+				border-bottom: 1px solid #000;
+				background: none;
+				padding: 10px;
+			}
+		}
+  }
+
+  .badge-list {
+    list-style: none;
+    text-align: left;
+    background: #fff;
+    padding: 0;
+    margin-top: 0;
+    width: 100%;
+    position: absolute;
+    top: 40px;
+    left: 0;
+		background: #fff;
+		z-index: 1;
+
+    li {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      cursor: pointer;
+    }
+
+    li:hover {
+      background: #000;
+      color: #fff;
+    }
+
+    li:last-child {
+      border-bottom: none;
+    }
+  }
+
+  .selected-badges {
+    padding: 0 0 30px;
+  }
 	}
 </style>
 

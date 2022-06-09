@@ -54,15 +54,14 @@ const actions = {
     //push todo at the beginning
     parsedTodo.push(todo) 
     localStorage.setItem('todos', JSON.stringify(parsedTodo));
-
     //Change parsedTodo params to todo kung ilisan na ni siya ug API
     commit('newTodo', parsedTodo)
   },
 
   updateTodo({commit}, params) {
+    console.log("params", params);
     let parsedTodo = JSON.parse(localStorage.getItem('todos'))
     if(parsedTodo == null) {parsedTodo = []}
-    
     let objIndex = parsedTodo.findIndex(todo => todo.id == params.id)
 
     parsedTodo[objIndex] = params
@@ -86,7 +85,6 @@ const mutations = {
   setTodos: (state, todos) => state.todos = todos,
 
   newTodo: (state, todo) => {
-    
     //Ilisan ni siya ug katong state.todos.push(todo)
     state.todos = todo
 

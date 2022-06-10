@@ -1,10 +1,7 @@
 <template>
   <div
     class="autocomplete"
-    tabindex="0"
     @click="focusInput()"
-    @focus="showList = true"
-    @blur="showList = false"
   >
     <label for="input_text">Select</label>
     <div class="selections">
@@ -13,7 +10,7 @@
         :key="index"
         class="chip"
       >
-        {{item}}
+        {{ item }}
         <div
           class="close-button"
           @click="removeSelectedItem(item)"
@@ -28,9 +25,8 @@
         v-model="query"
         type="text"
         autocomplete="off"
-        @focus="showList = true"
-        @blur="showList = false"
         @keydown.delete="handleKeydownDelete"
+        @focus="showList = true"
       >
     </div>
 
@@ -42,7 +38,7 @@
         v-for="(item, index) in getFilteredResults"
         :key="index"
         class="list__item"
-        @click="selectItem(item)"
+        @click.prevent.stop="selectItem(item)"
       >
         {{ item }}
       </li>
@@ -64,36 +60,37 @@ export default {
   props: {
     items: {
       type: Array,
-      // required: true,
-      default () {
-        return [
-          'Chip 1', 'Chip 2', 'Chip 3', 'Chip 4', 'Chip 5'
-        ]
-      }
+      required: true,
+      default: () => ([])
     }
   },
 
+  emits: ['selected-items'],
+
   data () {
     return {
-      clonedItems: [],
+      defaultResults: ['Low', 'Medium', 'High', 'At Risk', 'Off Track', 'On Track'],
       showList: false,
       query: '',
-      result: [],
-      selectedItems: [],
-      prevQuery: ''
+      selectedItems: []
     }
   },
 
   computed: {
     getFilteredResults () {
-      return this.result.filter(item => item.toLowerCase().includes(this.query.trim().toLowerCase())).sort()
+      const query = this.query.trim().toLowerCase()
+
+      return this.notSelectedItems.filter(item => item.toLowerCase().includes(query)).sort()
+    },
+
+    notSelectedItems () {
+      return this.defaultResults.filter(defs => !this.selectedItems.includes(defs))
     }
   },
 
   created () {
     if (this.items !== undefined) {
-      this.clonedItems = [...this.items]
-      this.result = [...this.items]
+      this.selectedItems = [...this.items]
     }
   },
 
@@ -102,9 +99,14 @@ export default {
       this.$refs.input.focus()
     },
 
+    emitSelectedItems () {
+      this.$emit('selected-items', this.selectedItems)
+    },
+
     removeSelectedItem (item) {
       this.spliceArray(item, this.selectedItems)
-      this.result.push(item)
+
+      this.emitSelectedItems()
     },
 
     spliceArray (item, array) {
@@ -113,15 +115,16 @@ export default {
     },
 
     selectItem (item) {
-      this.spliceArray(item, this.result)
+      // this.spliceArray(item, this.result)
       this.selectedItems.push(item)
+      this.showList = false
+      this.emitSelectedItems()
     },
 
     handleKeydownDelete () {
-      console.log(this.query, this.query.length > 0)
-      if (this.selectedItems.length > 0 && !this.query.length > 0) {
-        this.result.push(this.selectedItems.pop())
-      }
+      this.selectedItems.pop()
+
+      this.emitSelectedItems()
     }
   }
 }

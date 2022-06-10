@@ -1,30 +1,27 @@
 <template>
-  <div class="wrapper">
+  <div class="HomeView wrapper">
     <div class="content">
-      <!-- <Todos
+      <Todos
         v-for="(group, groupKey) in todosByGroup"
         :key="groupKey"
         :todos="group"
         :title="groupKey"
-      /> -->
-      <Autocomplete />
+      />
     </div>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-// import Todos from '@/components/Todos.vue'
+import Todos from '@/components/Todos.vue'
 
 import { mapActions, mapGetters } from 'vuex'
-import Autocomplete from '@/components/autocomplete.vue'
 
 export default {
   name: 'HomeView',
 
   components: {
-    // Todos,
-    Autocomplete
+    Todos
   },
 
   data () {
@@ -47,7 +44,7 @@ export default {
 }
 </script>
 
-<style scope lang="scss">
+<style scoped lang="scss">
   .wrapper {
     max-width: 1375px;
     margin: 0 auto;

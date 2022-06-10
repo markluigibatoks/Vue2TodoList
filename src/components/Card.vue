@@ -26,42 +26,10 @@
 
     <div class="card__body">
       <div class="card__badges">
-        <Badge
-          v-for="(badge, index) in filterBadges"
-          :key="index"
-          :title="badge.name"
-          :deletable="showAutocomplete"
-          @on-remove="onRemove(badge)"
+        <Autocomplete
+          :items="todo.badges"
+          @selected-items="changeBadges"
         />
-
-        <div
-          v-if="showAutocomplete"
-          class="autocomplete"
-        >
-          <div class="badge-group">
-            <div class="badge-group__input">
-              <input
-                id="searchTxt"
-                v-model="searchTxt"
-                type="text"
-                placeholder="Search for a badge..."
-                @focus="showAutocomplete = true"
-              >
-            </div>
-          </div>
-          <ul
-            class="badge-list"
-          >
-            <li
-              v-for="(badge, index) in searchResults"
-              :key="index"
-              class="badge-list__item"
-              @click="selectBadge(badge)"
-            >
-              {{ badge.name }}
-            </li>
-          </ul>
-        </div>
       </div>
     </div>
 
@@ -82,28 +50,19 @@
             <i class="fa-solid fa-trash"></i>
           </div>
         </button>
-
-        <button
-          class="showAutocomplete"
-          @click="showAutocomplete = !showAutocomplete"
-        >
-          <div class="button__body">
-            <i class="fa-solid fa-dragon"></i>
-          </div>
-        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import Badge from './Badge.vue'
 import { mapActions } from 'vuex'
+import Autocomplete from './autocomplete.vue'
 
 export default {
   name: 'CardComponent',
   components: {
-    Badge
+    Autocomplete
   },
 
   props: {
@@ -119,39 +78,15 @@ export default {
     return {
       title: '',
       editField: '',
-      showAutocomplete: false,
       typingTimer: '',
       doneTypingInterval: 2500,
-      baseUrl: 'https://i.pravatar.cc/150?img=',
-
-      defaultBadges: [],
-      searchResults: [],
-      searchTxt: ''
+      baseUrl: 'https://i.pravatar.cc/150?img='
     }
   },
 
   computed: {
     imageSrc () {
       return this.baseUrl + this.todo.person
-    },
-
-    filterResults () {
-      return this.defaultBadges.filter(badge => !badge.selected)
-    },
-
-    filterBadges () {
-      return this.defaultBadges.filter(badge => badge.selected)
-    },
-
-    getAllSelectedBadges () {
-      const badges = []
-      this.defaultBadges.forEach(curr => {
-        if (curr.selected) {
-          badges.push(curr.name)
-        }
-      })
-
-      return badges
     }
   },
 
@@ -162,14 +97,6 @@ export default {
       if (this.title !== this.todo.title) { // if input title has changes
         this.typingTimer = setTimeout(this.doneTyping, this.doneTypingInterval)
       }
-    },
-
-    searchTxt (newValue) {
-      this.searchResults = this.defaultBadges.filter(badge => badge.name.toLowerCase().includes(newValue.trim().toLowerCase()) && !badge.selected)
-    },
-
-    defaultBadges () {
-      this.searchResults = this.filterResults
     }
   },
 
@@ -197,11 +124,6 @@ export default {
       this.editField = name
     },
 
-    onRemove (badge) {
-      this.defaultBadges = this.defaultBadges.map(b => b === badge ? { ...b, selected: false } : b)
-      this.changeBadges()
-    },
-
     blurField () {
       this.editField = ''
     },
@@ -217,9 +139,10 @@ export default {
       })
     },
 
-    changeBadges () {
+    changeBadges (e) {
+      // console.log(e)
       this.updateTodo({
-        ...this.todo, badges: this.getAllSelectedBadges
+        ...this.todo, badges: e
       })
     },
 
@@ -227,17 +150,6 @@ export default {
       if (confirm('Continue deleting the todo?')) {
         this.deleteTodo(this.todo)
       }
-    },
-
-    selectBadge (badge) {
-      this.defaultBadges = this.defaultBadges.map(b => b === badge ? { ...b, selected: true } : b)
-
-      this.searchTxt = ''
-      this.show = false
-
-      this.showAutocomplete = false
-
-      this.changeBadges()
     },
 
     dragStart (e) {

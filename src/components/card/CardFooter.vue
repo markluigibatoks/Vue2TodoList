@@ -33,32 +33,5 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.card__footer{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: #ADADAD;
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    width: calc(100% - 40px);
-
-    .footer__user {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-
-        img{
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-    }
-
-    .footer__other {
-    // icon COlor: 676767
-
-    }
-}
+  @import './styles/CardFooter.scss';
 </style>

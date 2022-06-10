@@ -1,0 +1,26 @@
+.todo__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+
+  .header__title {
+  font-weight: bold;
+  font-size: 24px;
+  }
+
+  .header__actions{
+  display: flex;
+  justify-content: space-between;
+
+      button {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      margin-left: 10px;
+      }
+
+      button:first-child{margin-left: 0;}
+  }
+}

@@ -13,7 +13,7 @@
 
 <script>
 // @ is an alias to /src
-import Todos from '@/components/Todos.vue'
+import Todos from '@/components/todos/Todos.vue'
 
 import { mapActions, mapGetters } from 'vuex'
 
@@ -45,14 +45,5 @@ export default {
 </script>
 
 <style scoped lang="scss">
-  .wrapper {
-    max-width: 1375px;
-    margin: 0 auto;
-
-    .content {
-      display: flex;
-      justify-content: space-between;
-    }
-  }
-
+  @import './styles/HomeView.scss'
 </style>

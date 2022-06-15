@@ -102,19 +102,6 @@ export default {
 
   created () {
     this.title = this.todo.title
-    this.defaultBadges = [
-      { name: 'Low', selected: false },
-      { name: 'Medium', selected: false },
-      { name: 'High', selected: false },
-      { name: 'On Track', selected: false },
-      { name: 'Off Track', selected: false },
-      { name: 'At Risk', selected: false }
-    ]
-
-    this.todo.badges.forEach(badge => {
-      const i = this.defaultBadges.findIndex(b => b.name === badge)
-      this.defaultBadges[i].selected = true
-    })
   },
 
   methods: {
@@ -135,20 +122,20 @@ export default {
     doneTyping () {
       console.log('User done typing!!!')
       this.updateTodo({
-        ...this.todo, title: this.title
+        id: this.todo.id, title: this.title
       })
     },
 
     changeBadges (e) {
-      // console.log(e)
+      console.log(e)
       this.updateTodo({
-        ...this.todo, badges: e
+        id: this.todo.id, badges: e
       })
     },
 
     onDeleteTodo () {
       if (confirm('Continue deleting the todo?')) {
-        this.deleteTodo(this.todo)
+        this.deleteTodo({ id: this.todo.id })
       }
     },
 

@@ -69,7 +69,7 @@ export default {
 
   data () {
     return {
-      defaultResults: ['Low', 'Medium', 'High', 'At Risk', 'Off Track', 'On Track'],
+      defaultResults: ['Low', 'Medium', 'High', 'On Track', 'At Risk', 'Off Track'],
       showList: false,
       query: '',
       selectedItems: []
@@ -80,7 +80,7 @@ export default {
     getFilteredResults () {
       const query = this.query.trim().toLowerCase()
 
-      return this.notSelectedItems.filter(item => item.toLowerCase().includes(query)).sort()
+      return this.notSelectedItems.filter(item => item.toLowerCase().includes(query))
     },
 
     notSelectedItems () {
@@ -89,8 +89,10 @@ export default {
   },
 
   created () {
-    if (this.items !== undefined) {
-      this.selectedItems = [...this.items]
+    if (this.items !== undefined && this.items[0] !== null) {
+      // -1 because table id starts with 1
+      // array indexes starts at 0
+      this.selectedItems = this.items.map(item => this.defaultResults[item - 1])
     }
   },
 
@@ -100,7 +102,8 @@ export default {
     },
 
     emitSelectedItems () {
-      this.$emit('selected-items', this.selectedItems)
+      // +1 to items to match the database counting
+      this.$emit('selected-items', this.selectedItems.map(item => this.defaultResults.indexOf(item) + 1))
     },
 
     removeSelectedItem (item) {

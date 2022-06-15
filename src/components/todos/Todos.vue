@@ -76,9 +76,7 @@ export default {
 
     drop (e) {
       const todoId = Number(e.dataTransfer.getData('card_id'))
-      const todoIndex = this.allTodos().findIndex(todo => todo.id === todoId)
-      const todo = this.allTodos()[todoIndex]
-      this.updateTodo({ ...todo, group: this.title })
+      this.updateTodo({ id: todoId, group: this.title })
     }
   }
 }

@@ -9,14 +9,12 @@
       @handle-change-text="doneTyping"
     />
 
-    <div class="card__body">
-      <div class="card__badges">
-        <Autocomplete
-          :items="todo.badges"
-          @selected-items="changeBadges"
-        />
-      </div>
-    </div>
+    <CardBody>
+      <Autocomplete
+        :items="todo.badges"
+        @selected-items="changeBadges"
+      />
+    </CardBody>
 
     <CardFooter
       @handle-click-event="onDeleteTodo"
@@ -29,15 +27,17 @@
 <script>
 import { mapActions } from 'vuex'
 import Autocomplete from '../autocomplete/Autocomplete.vue'
-import CardFooter from './CardFooter.vue'
 import CardHeader from './CardHeader.vue'
+import CardBody from './CardBody.vue'
+import CardFooter from './CardFooter.vue'
 
 export default {
   name: 'BaseCard',
   components: {
     Autocomplete,
-    CardFooter,
-    CardHeader
+    CardHeader,
+    CardBody,
+    CardFooter
   },
 
   props: {

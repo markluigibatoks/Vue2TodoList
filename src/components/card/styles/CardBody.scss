@@ -1,0 +1,11 @@
+.card__body{
+  display: block;
+  min-height: 80px;
+  cursor: pointer;
+
+  .card__badges {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+}

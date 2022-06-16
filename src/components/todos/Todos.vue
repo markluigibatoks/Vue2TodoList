@@ -20,7 +20,7 @@
     <div class="todo__footer">
       <div
         class="footer__actions"
-        :class="{no__child: !todos.length > 0}"
+        :class="{no__child: !todos.length}"
       >
         <button
           class="button"

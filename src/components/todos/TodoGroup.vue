@@ -11,7 +11,7 @@
       :key="todo.id"
       class="card__list"
     >
-      <Card
+      <BaseCard
         :id="todo.id"
         :todo="todo"
       />
@@ -38,7 +38,7 @@
 
 <script>
 import TodoHeader from './TodoHeader.vue'
-import Card from '../card/Card.vue'
+import BaseCard from '../card/BaseCard.vue'
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
@@ -46,7 +46,7 @@ export default {
 
   components: {
     TodoHeader,
-    Card
+    BaseCard
   },
 
   props: {

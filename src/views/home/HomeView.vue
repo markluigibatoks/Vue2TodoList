@@ -1,7 +1,7 @@
 <template>
   <div class="HomeView wrapper">
     <div class="content">
-      <Todos
+      <TodoGroup
         v-for="(group, groupKey) in todosByGroup"
         :key="groupKey"
         :todos="group"
@@ -13,7 +13,7 @@
 
 <script>
 // @ is an alias to /src
-import Todos from '@/components/todos/Todos.vue'
+import TodoGroup from '@/components/todos/TodoGroup.vue'
 
 import { mapActions, mapGetters } from 'vuex'
 
@@ -21,7 +21,7 @@ export default {
   name: 'HomeView',
 
   components: {
-    Todos
+    TodoGroup
   },
 
   data () {

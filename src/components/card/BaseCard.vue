@@ -60,7 +60,7 @@ import { mapActions } from 'vuex'
 import Autocomplete from '../autocomplete/Autocomplete.vue'
 
 export default {
-  name: 'CardComponent',
+  name: 'BaseCard',
   components: {
     Autocomplete
   },

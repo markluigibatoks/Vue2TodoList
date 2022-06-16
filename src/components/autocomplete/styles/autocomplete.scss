@@ -1,12 +1,6 @@
-* {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-}
-
 .autocomplete {
   width: 100%;
-  background: skyblue;
+  background: #eee;
   cursor: text;
   position: relative;
   padding: 8px;
@@ -34,10 +28,8 @@
     position: relative;
 
     span.chip {
-      border-radius: 30px;
-      background: #555;
+      border-radius: 8px;
       padding: 4px 36px 4px 16px;
-      color: #fff;
       display: inline-block;
       margin-right: 8px;
       margin-bottom: 4px;
@@ -61,6 +53,31 @@
       outline: none;
       border: none;
       background: none;
+    }
+
+    .low {
+      background: #50D5F6;
+      color: #191919;
+    }
+    .medium {
+      background: #FCA821;
+      color: #191919;
+    }
+    .high {
+      background: #9F45E2;
+      color: #fff;
+    }
+    .off-track {
+      background: #F95878;
+      color: #fff;
+    }
+    .on-track {
+      background: #1FCEC2;
+      color: #191919;
+    }
+    .at-risk {
+      background: #FED02C;
+      color: #191919;
     }
   }
 
@@ -86,4 +103,5 @@
       background: skyblue;
     }
   }
+
 }

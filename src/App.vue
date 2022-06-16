@@ -16,6 +16,11 @@
   font-size: 18px;
 }
 
-* {box-sizing: border-box !important;}
+* {
+  box-sizing: border-box !important;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
 
 </style>

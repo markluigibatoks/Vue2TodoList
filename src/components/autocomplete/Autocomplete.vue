@@ -8,6 +8,7 @@
       <span
         v-for="(item, index) in selectedItems"
         :key="index"
+        :class="kebab(item)"
         class="chip"
       >
         {{ item }}
@@ -97,6 +98,12 @@ export default {
   },
 
   methods: {
+    kebab (str) {
+      return str.replace(/([a-z])([A-Z])/g, '$1-$2')
+        .replace(/[\s_]+/g, '-')
+        .toLowerCase()
+    },
+
     focusInput () {
       this.$refs.input.focus()
     },

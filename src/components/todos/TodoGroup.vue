@@ -17,27 +17,16 @@
       />
     </div>
 
-    <div class="todo__footer">
-      <div
-        class="footer__actions"
-        :class="{no__child: !todos.length}"
-      >
-        <button
-          class="button"
-          @click="addNewTodo(title)"
-        >
-          <div class="button__prepend">
-            <i class="fa-solid fa-circle-plus"></i>
-          </div>
-          Add Task
-        </button>
-      </div>
-    </div>
+    <TodoFooter
+      :class="{no__child: !todos.length}"
+      @handle-click-event="addNewTodo(title)"
+    />
   </div>
 </template>
 
 <script>
 import TodoHeader from './TodoHeader.vue'
+import TodoFooter from './TodoFooter.vue'
 import BaseCard from '../card/BaseCard.vue'
 import { mapActions, mapGetters } from 'vuex'
 
@@ -46,7 +35,8 @@ export default {
 
   components: {
     TodoHeader,
-    BaseCard
+    BaseCard,
+    TodoFooter
   },
 
   props: {

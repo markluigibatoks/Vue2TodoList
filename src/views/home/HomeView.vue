@@ -5,7 +5,7 @@
         v-for="(group, groupKey) in todosByGroup"
         :key="groupKey"
         :todos="group"
-        :title="groupKey"
+        :group-name="groupKey"
       />
     </div>
   </div>

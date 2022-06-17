@@ -11,7 +11,10 @@
       :key="todo.id"
       class="card__list"
     >
-      <BaseCard>
+      <BaseCard
+        :id="todo.id"
+        draggable="true"
+      >
         <template #card-header>
           <CardHeader>
             <CardTitle>
@@ -28,10 +31,31 @@
           </CardHeader>
         </template>
         <template #card-body>
-          <CardBody />
+          <CardBody>
+            <Autocomplete
+              :items="todo.badges"
+              :default-results="defaultResults"
+              @selected-items="changeBadges($event, todo.id)"
+            />
+          </CardBody>
         </template>
         <template #card-footer>
-          <CardFooter />
+          <CardFooter>
+            <template #card-user>
+              <ImageView :src="`${baseUrl + todo.person}`" />
+            </template>
+            <template #card-actions>
+              <button
+                class="deleteTodoButton"
+                title="Delete Card"
+                @click="onDeleteTodo(todo.id)"
+              >
+                <div class="button__body">
+                  <i class="fa-solid fa-trash"></i>
+                </div>
+              </button>
+            </template>
+          </CardFooter>
         </template>
       </BaseCard>
     </div>
@@ -53,6 +77,8 @@ import CardTitle from '../card/CardTitle.vue'
 import CardBody from '../card/CardBody.vue'
 import CardFooter from '../card/CardFooter.vue'
 import EditableText from '../card/EditableText.vue'
+import Autocomplete from '../autocomplete/Autocomplete.vue'
+import ImageView from '../card/ImageView.vue'
 
 export default {
   name: 'TodoComponent',
@@ -65,7 +91,9 @@ export default {
     CardBody,
     CardFooter,
     TodoFooter,
-    EditableText
+    EditableText,
+    Autocomplete,
+    ImageView
   },
 
   props: {
@@ -85,11 +113,14 @@ export default {
     return {
       cardTitle: '',
       typingTimer: '',
-      doneTypingInterval: 2500
+      doneTypingInterval: 2500,
+      baseUrl: 'https://i.pravatar.cc/150?img=',
+      defaultResults: ['Low', 'Medium', 'High', 'On Track', 'At Risk', 'Off Track']
     }
   },
 
   computed: {
+
     getTitle () {
       if (this.groupName === 'todo') return 'To do'
       else if (this.groupName === 'dynamic') return 'Untitled'
@@ -98,7 +129,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['addNewTodo', 'updateTodo']),
+    ...mapActions(['addNewTodo', 'updateTodo', 'deleteTodo']),
     ...mapGetters(['allTodos']),
 
     drop (e) {
@@ -110,6 +141,18 @@ export default {
       clearTimeout(this.typingTimer)
 
       this.typingTimer = setTimeout(this.doneTyping(value, id), this.doneTypingInterval)
+    },
+
+    onDeleteTodo (id) {
+      if (confirm('Continue deleting the todo?')) {
+        this.deleteTodo({ id: id })
+      }
+    },
+
+    changeBadges (e, id) {
+      this.updateTodo({
+        id: id, badges: e
+      })
     },
 
     doneTyping (value, id) {

@@ -63,6 +63,11 @@ export default {
       type: Array,
       required: true,
       default: () => ([])
+    },
+    defaultResults: {
+      type: Array,
+      required: true,
+      default: () => ([])
     }
   },
 
@@ -70,7 +75,6 @@ export default {
 
   data () {
     return {
-      defaultResults: ['Low', 'Medium', 'High', 'On Track', 'At Risk', 'Off Track'],
       showList: false,
       query: '',
       selectedItems: []

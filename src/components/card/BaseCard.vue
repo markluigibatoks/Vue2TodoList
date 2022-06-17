@@ -1,5 +1,8 @@
 <template>
-  <div class="card">
+  <div
+    class="card"
+    @dragstart="dragStart($event)"
+  >
     <slot name="card-header">
       Header
     </slot>
@@ -14,7 +17,15 @@
 
 <script>
 export default {
-  name: 'BaseCard'
+  name: 'BaseCard',
+
+  methods: {
+    dragStart (e) {
+      const target = e.target
+      console.log('todoId', target.id)
+      e.dataTransfer.setData('card_id', target.id)
+    }
+  }
 }
 </script>
 

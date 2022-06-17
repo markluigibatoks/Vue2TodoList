@@ -1,8 +1,6 @@
 <template>
   <div class="card__body">
-    <div class="card__badges">
-      <slot></slot>
-    </div>
+    <slot></slot>
   </div>
 </template>
 

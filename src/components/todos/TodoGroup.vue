@@ -11,15 +11,28 @@
       :key="todo.id"
       class="card__list"
     >
-      <BaseCard
-        :id="todo.id"
-        :todo="todo"
-      />
+      <BaseCard>
+        <CardHeader>
+          <CardTitle>
+            <template #title-prepend>
+              <i class="fa-regular fa-circle-check"></i>
+            </template>
+            <template #title-body>
+              <EditableText
+                v-model="todo.title"
+                @on-change="handleOnInput($event, todo.id)"
+              />
+            </template>
+          </CardTitle>
+        </CardHeader>
+        <CardBody />
+        <CardFooter />
+      </BaseCard>
     </div>
 
     <TodoFooter
       :class="{no__child: !todos.length}"
-      @handle-click-event="addNewTodo(title)"
+      @handle-click-event="addNewTodo(groupName)"
     />
   </div>
 </template>
@@ -29,6 +42,11 @@ import TodoHeader from './TodoHeader.vue'
 import TodoFooter from './TodoFooter.vue'
 import BaseCard from '../card/BaseCard.vue'
 import { mapActions, mapGetters } from 'vuex'
+import CardHeader from '../card/CardHeader.vue'
+import CardTitle from '../card/CardTitle.vue'
+import CardBody from '../card/CardBody.vue'
+import CardFooter from '../card/CardFooter.vue'
+import EditableText from '../card/EditableText.vue'
 
 export default {
   name: 'TodoComponent',
@@ -36,7 +54,12 @@ export default {
   components: {
     TodoHeader,
     BaseCard,
-    TodoFooter
+    CardHeader,
+    CardTitle,
+    CardBody,
+    CardFooter,
+    TodoFooter,
+    EditableText
   },
 
   props: {
@@ -46,17 +69,25 @@ export default {
         return []
       }
     },
-    title: {
+    groupName: {
       type: String,
       default: ''
     }
   },
 
+  data () {
+    return {
+      cardTitle: '',
+      typingTimer: '',
+      doneTypingInterval: 2500
+    }
+  },
+
   computed: {
     getTitle () {
-      if (this.title === 'todo') return 'To do'
-      else if (this.title === 'dynamic') return 'Untitled'
-      return this.title
+      if (this.groupName === 'todo') return 'To do'
+      else if (this.groupName === 'dynamic') return 'Untitled'
+      return this.groupName
     }
   },
 
@@ -66,7 +97,20 @@ export default {
 
     drop (e) {
       const todoId = Number(e.dataTransfer.getData('card_id'))
-      this.updateTodo({ id: todoId, group: this.title })
+      this.updateTodo({ id: todoId, group: this.groupName })
+    },
+
+    handleOnInput (value, id) {
+      clearTimeout(this.typingTimer)
+
+      this.typingTimer = setTimeout(this.doneTyping(value, id), this.doneTypingInterval)
+    },
+
+    doneTyping (value, id) {
+      console.log('User done typing!!!')
+      this.updateTodo({
+        id: id, title: value
+      })
     }
   }
 }

@@ -12,21 +12,27 @@
       class="card__list"
     >
       <BaseCard>
-        <CardHeader>
-          <CardTitle>
-            <template #title-prepend>
-              <i class="fa-regular fa-circle-check"></i>
-            </template>
-            <template #title-body>
-              <EditableText
-                v-model="todo.title"
-                @on-change="handleOnInput($event, todo.id)"
-              />
-            </template>
-          </CardTitle>
-        </CardHeader>
-        <CardBody />
-        <CardFooter />
+        <template #card-header>
+          <CardHeader>
+            <CardTitle>
+              <template #title-prepend>
+                <i class="fa-regular fa-circle-check"></i>
+              </template>
+              <template #title-body>
+                <EditableText
+                  v-model="todo.title"
+                  @on-change="handleOnInput($event, todo.id)"
+                />
+              </template>
+            </CardTitle>
+          </CardHeader>
+        </template>
+        <template #card-body>
+          <CardBody />
+        </template>
+        <template #card-footer>
+          <CardFooter />
+        </template>
       </BaseCard>
     </div>
 

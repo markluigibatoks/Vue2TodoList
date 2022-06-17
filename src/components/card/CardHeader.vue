@@ -5,22 +5,6 @@
 </template>
 
 <script>
-export default {
-  props: {
-    defaultText: {
-      type: String,
-      default: ''
-    }
-  },
-  data () {
-    return {
-      editField: '',
-      title: '',
-      typingTimer: '',
-      doneTypingInterval: 2500
-    }
-  }
-}
 </script>
 
 <style lang="scss" scoped>
